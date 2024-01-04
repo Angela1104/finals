@@ -1,0 +1,384 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Answer</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-image: url('/static/images/quiz.png');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+    }
+
+    header {
+      background-color: #005477;
+      color: #fff;
+      text-align: center;
+      padding: 15px 0;
+    }
+
+    section#quiz-content {
+      padding: 20px;
+      text-align: center;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: stretch;
+    }
+
+    .category-box {
+      flex: 1; /* Make each box take equal space */
+      width: 18%; /* Adjust as needed to fit 5 categories above and 5 categories below */
+      margin: 0 1%; /* Adjust margin to create space between categories and fit 5 per row */
+      background-color: #fff;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 20px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .category-image {
+      width: 100%;
+      max-height: 200px;
+      object-fit: contain;
+      border-radius: 10px;
+    }
+
+    .category-name {
+      margin-top: 10px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .answer-list {
+      width: 70%;
+      background-color: #fff;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 20px;
+      box-sizing: border-box;
+      margin-top: 20px;
+      text-align: left;
+    }
+
+    .answer-list ul {
+      padding: 0;
+      margin: 0;
+    }
+
+    .answer-list li {
+      list-style-type: none;
+      margin-bottom: 10px;
+      font-size: 16px;
+    }
+
+    footer {
+      background-color: #005477;
+      color: #fff;
+      text-align: center;
+      padding: 10px 0;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <h1>Answer key</h1>
+  </header>
+
+  <section id="quiz-content">
+
+    <div class="category-box">
+      <img src="{% static 'images/generalcategory.png' %}" alt="Category Image" class="category-image">
+      <span class="category-name">General Knowledge</span>
+      <ul>
+        <li>Paris</li>
+        <li>William Shakespeare</li>
+        <li>Mars</li>
+        <li>1945</li>
+        <li>Tokyo</li>
+        <li>Leonardo da Vinci</li>
+        <li>Au</li>
+        <li>Mars</li>
+        <li>George Washington</li>
+        <li>Africa</li>
+        <li>12</li>
+        <li>Harper Lee</li>
+        <li>Canberra</li>
+        <li>Oxygen</li>
+        <li>Albert Einstein</li>
+        <li>Yuan</li>
+        <li>1912</li>
+        <li>Pacific Ocean</li>
+        <li>George Orwell</li>
+        <li>Oxygen</li>
+      </ul>
+    </div>
+
+    <div class="category-box">
+      <img src="{% static 'images/environmentalcategory.png' %}" alt="Category Image" class="category-image">
+      <span class="category-name">Environment</span>
+      <ul>
+        <li>Carbon Dioxide</li>
+        <li>Solar</li>
+        <li>Plastic</li>
+        <li>Greenpeace</li>
+        <li>Extinction</li>
+        <li>Logging</li>
+        <li>Chlorofluorocarbons (CFCs)</li>
+        <li>Global Warming</li>
+        <li>Pacific Ocean</li>
+        <li>To provide a route for wildlife migration</li>
+        <li>Sulfur Dioxide</li>
+        <li>Coal</li>
+        <li>Reforestation</li>
+        <li>Ocean acidification</li>
+        <li>Montreal Protocol</li>
+        <li>Photosynthesis</li>
+        <li>Groundwater</li>
+        <li>Rising sea temperatures</li>
+        <li>Recycling</li>
+        <li>Giant Panda</li>
+      </ul>
+    </div>
+
+    <div class="category-box">
+      <img src="{% static 'images/animalcategory.png' %}" alt="Category Image" class="category-image">
+      <span class="category-name">Animal</span>
+      <ul>
+        <li>Blue Whale</li>
+        <li>Parrot</li>
+        <li>Komodo Dragon</li>
+        <li>Frog</li>
+        <li>Electric Eel</li>
+        <li>Atlas Moth</li>
+        <li>Kangaroo</li>
+        <li>Seals</li>
+        <li>Snow Leopard</li>
+        <li>Whale Shark</li>
+        <li>Goldfish</li>
+        <li>Elephant</li>
+        <li>Brachiosaurus</li>
+        <li>Owl</li>
+        <li>Gorilla</li>
+        <li>Koala</li>
+        <li>Albatross</li>
+        <li>Buffalo</li>
+        <li>Water storage</li>
+        <li>Anglerfish</li>
+      </ul>
+    </div>
+
+    <div class="category-box">
+      <img src="{% static 'images/geocategory.png' %}" alt="Category Image" class="category-image">
+      <span class="category-name">Geography</span>
+      <ul>
+        <li>Paris</li>
+        <li>Nile</li>
+        <li>Africa</li>
+        <li>Pacific Ocean</li>
+        <li>Himalayas</li>
+        <li>Ottawa</li>
+        <li>Japan</li>
+        <li>Australia</li>
+        <li>Pretoria</li>
+        <li>Greenland</li>
+        <li>Yen</li>
+        <li>Atlantic and Pacific Ocean</li>
+        <li>Great Victoria Desert</li>
+        <li>Portuguese</li>
+        <li>Turkey</li>
+        <li>Brazil</li>
+        <li>Euphrates</li>
+        <li>Morocco</li>
+        <li>Denali (Mount McKinley)</li>
+        <li>Finland</li>
+      </ul>
+    </div>
+
+    <div class="category-box">
+      <img src="{% static 'images/sciencecategory.png' %}" alt="Category Image" class="category-image">
+      <span class="category-name">Science</span>
+      <ul>
+        <li>Au</li>
+        <li>Mars</li>
+        <li>Mitochondria</li>
+        <li>Albert Einstein</li>
+        <li>Skin</li>
+        <li>Carbon dioxide</li>
+        <li>H2O</li>
+        <li>300,000 km/s</li>
+        <li>Alexander Fleming</li>
+        <li>2</li>
+        <li>NaCl</li>
+        <li>Oxygen</li>
+        <li>Block ultraviolet radiation</li>
+        <li>Albert Einstein</li>
+        <li>Fe</li>
+        <li>Pacific Ocean</li>
+        <li>Nitrogen</li>
+        <li>Photosynthesis</li>
+        <li>Copernicus</li>
+        <li>Ampere</li>
+      </ul>
+    </div>
+
+    <div class="category-box">
+      <img src="{% static 'images/mathcategory.png' %}" alt="Category Image" class="category-image">
+      <span class="category-name">Mathematics</span>
+      <ul>
+        <li>3.142</li>
+        <li>Hypotenuse</li>
+        <li>0</li>
+        <li>17</li>
+        <li>180 degrees</li>
+        <li>8</li>
+        <li>Octagon</li>
+        <li>40 sq units</li>
+        <li>8</li>
+        <li>2πr</li>
+        <li>0.5bh</li>
+        <li>Sine</li>
+        <li>360</li>
+        <li>2.718</li>
+        <li>720 degrees</li>
+        <li>Quadrilateral</li>
+        <li>362,880</li>
+        <li>a² + b² = c²</li>
+        <li>5</li>
+        <li>0.75</li>
+      </ul>    
+    </div>
+
+    <div class="category-box">
+      <img src="{% static 'images/phistorycategory.png' %}" alt="Category Image" class="category-image">
+      <span class="category-name">Philippine History</span>
+      <ul>
+        <li>Jose Rizal</li>
+        <li>1898</li>
+        <li>Battle of Manila Bay</li>
+        <li>Emilio Aguinaldo</li>
+        <li>Treaty of Paris</li>
+        <li>Japan</li>
+        <li>Leyte</li>
+        <li>Hukbalahap</li>
+        <li>Ferdinand Marcos</li>
+        <li>People Power Revolution</li>
+        <li>Corazon Aquino</li>
+        <li>1991</li>
+        <li>Baguio</li>
+        <li>Filipino</li>
+        <li>Ferdinand Marcos</li>
+        <li>Declaration of Independence</li>
+        <li>Katipunan</li>
+        <li>Enrique of Malacca</li>
+        <li>Cagayan River</li>
+        <li>Mount Apo</li>
+      </ul>
+    </div>
+
+    <div class="category-box">
+      <img src="{% static 'images/technologyandinnovationcategory.png' %}" alt="Category Image" class="category-image">
+      <span class="category-name">Technology and Innovation</span>
+      <ul>
+        <li>Alan Turing</li>
+        <li>Artificial Intelligence</li>
+        <li>IBM</li>
+        <li>Creating three-dimensional objects layer by layer</li>
+        <li>HTML/CSS</li>
+        <li>Unauthorized access prevention</li>
+        <li>Apple</li>
+        <li>Storing and quickly retrieving information</li>
+        <li>Linux</li>
+        <li>Internet of Things</li>
+        <li>Paul Allen</li>
+        <li>Bluetooth</li>
+        <li>Securing and anonymizing online connections</li>
+        <li>Facebook</li>
+        <li>Google</li>
+        <li>Aerial photography and surveillance</li>
+        <li>Python</li>
+        <li>Accelerating content delivery and improving website performance</li>
+        <li>PlayStation</li>
+        <li>Accessing and using computing resources over the internet</li>
+      </ul>
+    </div>
+
+    <div class="category-box">
+      <img src="{% static 'images/comhardwarecategory.png' %}" alt="Category Image" class="category-image">
+      <span class="category-name">Computer Hardware</span>
+      <ul>
+        <li>Processing instructions</li>
+        <li>HDD (Hard Disk Drive)</li>
+        <li>Random Access Memory</li>
+        <li>USB (Universal Serial Bus)</li>
+        <li>Graphics rendering</li>
+        <li>Motherboard</li>
+        <li>Basic Input/Output System</li>
+        <li>RAM (Random Access Memory)</li>
+        <li>Provide power to components</li>
+        <li>TCP</li>
+        <li>Redundant Array of Independent Disks</li>
+        <li>Modem</li>
+        <li>Dissipate heat from the CPU</li>
+        <li>ROM (Read-Only Memory)</li>
+        <li>Connect to a network</li>
+        <li>Bluetooth</li>
+        <li>Read and write optical discs</li>
+        <li>Northbridge</li>
+        <li>High-Definition Multimedia Interface</li>
+        <li>Keyboard</li>
+      </ul>
+    </div>
+
+    <div class="category-box">
+      <img src="{% static 'images/programcategory.png' %}" alt="Category Image" class="category-image">
+      <span class="category-name">Programming Language</span>
+      <ul>
+        <li>Formalized set of instructions that a computer can interpret</li>
+        <li>Python</li>
+        <li>HyperText Markup Language</li>
+        <li>Functional</li>
+        <li>To translate source code into machine code</li>
+        <li>JavaScript</li>
+        <li>Collaborative development and version tracking</li>
+        <li>Bell Labs</li>
+        <li>Managing databases</li>
+        <li>Swift</li>
+        <li>Refers to the current object</li>
+        <li>Stack</li>
+        <li>To execute code only if a certain condition is false</li>
+        <li>Hiding the implementation details and exposing only necessary functionalities</li>
+        <li>R*</li>
+        <li>To initialize an object's properties</li>
+        <li>Application Programming Interface</li>
+        <li>Syntax error</li>
+        <li>To exit the loop prematurely</li>
+        <li>JavaScript</li>
+      </ul>
+    </div>
+
+  </section>
+
+  <footer>
+    <p>&copy; 2024 Palawan State University Trivia Quiz</p>
+  </footer>
+
+</body>
+
+</html>

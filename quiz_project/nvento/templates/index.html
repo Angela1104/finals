@@ -1,0 +1,153 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{% static 'css/app.css' %}">
+  <title>Navigation Buttons</title>
+  <style>
+    body {
+      background-image: url('/static/images/home.png');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background-color: #005477;
+      color: #fff;
+      text-align: center;
+      padding: 15px 0;
+    }
+
+    nav {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    nav button {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin: 0 10px;
+      cursor: pointer;
+      background-color: #000000;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      outline: none;
+    }
+
+    section {
+      padding: 20px;
+      text-align: center;
+    }
+
+    footer {
+      background-color: #005477;
+      color: #fff;
+      text-align: center;
+      padding: 10px 0;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+    }
+
+    #students-list,
+    #student-info {
+      display: none;
+      margin-bottom: 70px;
+    }
+
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Genius Mind</h1>
+  </header>
+
+  <nav>
+    <a href="{% url 'login' %}"><button>LogIn</button></a>
+    <button onclick="displayListOfStudents()">List of Students</button>
+    <button onclick="navigateToQuiz()">Quiz</button>
+    <button onclick="showAnswerKeyMessage()">Answer Key</button>
+    <button onclick="displayStudentInformation()">Student Information</button>
+  </nav>
+
+  <section id="main-content">
+    <h2>"start the fun and unexpected experience"</h2>
+  </section>
+
+  <section id="students-list"></section>
+  <section id="student-info"></section>
+
+  <footer>
+    <p>&copy; 2024 Palawan State University Trivia Quiz</p>
+  </footer>
+
+  <script>
+    function showAnswerKeyMessage() {
+      const confirmAnswerKey = confirm("Accessing the answer key is only allowed for checking purposes. Do you want to proceed?");
+      
+      if (confirmAnswerKey) {
+        alert("Please take the trivia quiz first to access the answer key.");
+      } else {
+        alert("Access to the answer key is restricted.");
+      }
+    }
+
+    function navigateToQuiz() {
+      try {
+        window.location.href = '{% url "quiz" %}';
+      } catch (error) {
+        console.error('Error navigating to quiz:', error);
+      }
+    }
+  
+    function displayListOfStudents() {
+      const studentNames = JSON.parse(localStorage.getItem('studentNames')) || [];
+
+      const studentsListSection = document.getElementById('students-list');
+      studentsListSection.innerHTML = `<h2>List of Students</h2>`;
+      studentNames.forEach(name => {
+        studentsListSection.innerHTML += `<p>${name}</p>`;
+      });
+
+      studentsListSection.style.display = 'block';
+      document.getElementById('student-info').style.display = 'none';
+    }
+
+    function displayStudentInformation() {
+      const allStudentInfo = JSON.parse(localStorage.getItem('studentDetails')) || [];
+  
+      const studentInfoSection = document.getElementById('student-info');
+      studentInfoSection.innerHTML = `<h2>All Student Information</h2>`;
+      
+      if (allStudentInfo.length > 0) {
+        let htmlContent = '';
+  
+        allStudentInfo.forEach(student => {
+          htmlContent += `<p>Name: ${student.name}</p>
+                         <p>Email: ${student.email}</p>
+                         <p>College: ${student.college}</p>
+                         <p>Program: ${student.program}</p>
+                         <hr>`;
+        });
+  
+        studentInfoSection.innerHTML += htmlContent;
+      } else {
+        studentInfoSection.innerHTML += `<p>No student information available.</p>`;
+      }
+  
+      studentInfoSection.style.display = 'block';
+      document.getElementById('students-list').style.display = 'none';
+    }
+  </script>
+</body>
+</html>

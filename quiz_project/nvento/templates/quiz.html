@@ -1,0 +1,533 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-image: url('/static/images/quiz.png');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+    }
+
+    header {
+      background-color: #005477;
+      color: #fff;
+      text-align: center;
+      padding: 15px 0;
+    }
+
+    section {
+      padding: 20px;
+      text-align: left;
+    }
+
+    footer {
+      background-color: #005477;
+      color: #fff;
+      text-align: center;
+      padding: 10px 0;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+    }
+
+    .category-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+    
+    .category-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-start; /* Start alignment from the left */
+    }
+    
+    .category-button {
+      width: calc(25% - 20px); /* 25% width for each column with margin between */
+      margin-bottom: 20px;
+      box-sizing: border-box; /* Include padding and border in the element's total width and height */
+      padding: 10px; /* Add padding for spacing within each button */
+      text-align: center;
+    }
+    
+    .category-button li {
+      cursor: pointer;
+      margin-bottom: 20px;
+      border: 25px solid #000000;
+      width: 300px;
+      text-align: center;
+    }
+    
+    .category-button img {
+      width: 100%; /* Make sure the image takes 100% of the button width */
+      height: auto; /* Maintain aspect ratio */
+    }
+    
+    @media (max-width: 1200px) {
+      .category-button {
+        width: calc(33.33% - 20px); /* Adjust for three columns on smaller screens */
+      }
+    }
+    
+    @media (max-width: 800px) {
+      .category-buttons {
+        justify-content: center; /* Center the columns on smaller screens */
+      }
+    
+      .category-button {
+        width: calc(50% - 20px); /* Adjust for two columns on even smaller screens */
+      }
+    
+      /* Center the last two categories on smaller screens */
+      @media (max-width: 800px) and (min-width: 481px) {
+        .category-button:nth-last-child(-n+2) {
+          margin-left: auto;
+          margin-right: auto;
+        }
+      }
+    
+      .category-buttons::after {
+        content: '';
+        flex-grow: 1;
+      }
+    }
+                
+    .question {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    button[type="submit"] {
+      margin-bottom: 70px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <h1>Quizzes</h1>
+  </header>
+
+  <section id="quiz-content">
+  </section>
+
+  <footer>
+    <p>&copy; 2024 Palawan State University Trivia Quiz</p>
+  </footer>
+
+  <script>
+    const categories = ['General Knowledge', 'Environment', 'Animal', 'Geography', 'Science', 'Mathematics', 'Philippine History', 'Technology and Innovation', 'Computer Hardware', 'Programming Language'];
+
+	const categoryBackgrounds = {
+        'General Knowledge': "{% static 'images/generalquiz.png' %}",
+        'Environment': "{% static 'images/environmentalquiz.png' %}",
+        'Animal': "{% static 'images/animalquiz.png' %}",
+        'Geography': "{% static 'images/geoquiz.png' %}",
+        'Science': "{% static 'images/sciencequiz.png' %}",
+        'Mathematics': "{% static 'images/mathquiz.png' %}",
+        'Philippine History': "{% static 'images/phistoryquiz.png' %}",
+        'Technology and Innovation': "{% static 'images/technologyandinnovationquiz.png' %}",
+        'Computer Hardware': "{% static 'images/comhardwarequiz.png' %}",
+        'Programming Language': "{% static 'images/programquiz.png' %}",
+      };
+
+    const categoryImages = {
+        'General Knowledge': "{% static 'images/generalcategory.png' %}",
+        'Environment': "{% static 'images/environmentalcategory.png' %}",
+        'Animal': "{% static 'images/animalcategory.png' %}",
+        'Geography': "{% static 'images/geocategory.png' %}",
+        'Science': "{% static 'images/sciencecategory.png' %}",
+        'Mathematics': "{% static 'images/mathcategory.png' %}",
+        'Philippine History': "{% static 'images/phistorycategory.png' %}",
+        'Technology and Innovation': "{% static 'images/technologyandinnovationcategory.png' %}",
+        'Computer Hardware': "{% static 'images/comhardwarecategory.png' %}",
+        'Programming Language': "{% static 'images/programcategory.png' %}",
+      };
+  
+      function displayCategoryButtons() {
+        const section = document.getElementById('quiz-content');
+        const categoryButtonsHTML = `<div class="category-buttons-container">
+                                       <div class="category-buttons">
+                                         ${categories.map(category => `
+                                           <div class="category-button" onclick="loadQuiz('${category}')">
+                                             <img src="${categoryImages[category]}" alt="${category} Image" class="category-image">
+                                             <span class="category-name">${category}</span>
+                                           </div>`).join('')}
+                                       </div>
+                                     </div>`;
+        
+        section.innerHTML = categoryButtonsHTML;
+      }
+      
+      function submitAnswers() {
+        
+        window.location.href = 'answerkey.html';
+        return false;
+    }
+
+    function loadQuiz(category) {
+        const section = document.getElementById('quiz-content');
+        const body = document.body;
+
+        body.style.backgroundImage = `url('${categoryBackgrounds[category]}')`;
+
+        const quizQuestionsHTML = `<h2>${category} Quiz</h2>
+                                   <form id="quiz-form" onsubmit="return submitAnswers()">
+                                     <!-- Insert your quiz questions here -->
+                                     ${generateQuestionsHTML(category, 20)}
+                                     <button type="submit">Submit Quiz</button>
+                                   </form>`;
+
+        section.innerHTML = quizQuestionsHTML;
+    }
+      
+    function generateQuestionsHTML(category, numQuestions) {
+      let questionsHTML = '';
+
+      const generalKnowledgeQuestions = [
+        { question: 'What is the capital of France?', options: ['Berlin', 'London', 'Paris'] },
+        { question: 'Who wrote "Romeo and Juliet"?', options: ['Charles Dickens', 'William Shakespeare', 'Jane Austen'] },
+        { question: 'What is the largest planet in our solar system?', options: ['Earth', 'Jupiter', 'Mars'] },
+        { question: 'In which year did World War II end?', options: ['1945', '1918', '1939'] },
+        { question: 'What is the capital of Japan?', options: ['Beijing', 'Seoul', 'Tokyo'] },
+        { question: 'Who painted the Mona Lisa?', options: ['Vincent van Gogh', 'Leonardo da Vinci', 'Pablo Picasso'] },
+        { question: 'What is the chemical symbol for gold?', options: ['Au', 'Ag', 'Fe'] },
+        { question: 'Which planet is known as the "Red Planet"?', options: ['Mars', 'Venus', 'Jupiter'] },
+        { question: 'Who was the first President of the United States?', options: ['Thomas Jefferson', 'George Washington', 'Abraham Lincoln'] },
+        { question: 'In which continent is the Sahara Desert located?', options: ['Asia', 'Africa', 'South America'] },
+        { question: 'What is the square root of 144?', options: ['10', '12', '14'] },
+        { question: 'Who wrote "To Kill a Mockingbird"?', options: ['J.K. Rowling', 'Harper Lee', 'George Orwell'] },
+        { question: 'What is the capital of Australia?', options: ['Sydney', 'Canberra', 'Melbourne'] },
+        { question: 'Which element has the chemical symbol \'O\'?', options: ['Oxygen', 'Osmium', 'Gold'] },
+        { question: 'Who developed the theory of relativity?', options: ['Isaac Newton', 'Albert Einstein', 'Galileo Galilei'] },
+        { question: 'What is the currency of China?', options: ['Yen', 'Won', 'Yuan'] },
+        { question: 'In which year did the Titanic sink?', options: ['1912', '1920', '1905'] },
+        { question: 'What is the largest ocean on Earth?', options: ['Indian Ocean', 'Atlantic Ocean', 'Pacific Ocean'] },
+        { question: 'Who wrote "1984"?', options: ['George Orwell', 'Aldous Huxley', 'Ray Bradbury'] },
+        { question: 'What is the main component of Earth\'s atmosphere?', options: ['Nitrogen', 'Oxygen', 'Carbon Dioxide'] },
+      ];
+
+      const environmentQuestions = [
+        { question: 'What is the primary gas responsible for the greenhouse effect?', options: ['Oxygen', 'Carbon Dioxide', 'Nitrogen', 'Methane'] },
+        { question: 'Which of the following is a renewable energy source?', options: ['Coal', 'Natural Gas', 'Solar', 'Oil'] },
+        { question: 'What is the largest source of ocean pollution?', options: ['Plastic', 'Oil spills', 'Industrial runoff', 'Sewage'] },
+        { question: 'Which organization is known for its efforts in wildlife conservation?', options: ['Greenpeace', 'NASA', 'WHO', 'UNESCO'] },
+        { question: 'What is the term for the loss of a species from a particular habitat or from the entire planet?', options: ['Extinction', 'Migration', 'Hibernation', 'Speciation'] },
+        { question: 'What is the main cause of deforestation?', options: ['Urbanization', 'Logging', 'Agriculture', 'Mining'] },
+        { question: 'Which gas is responsible for the thinning of the ozone layer?', options: ['Carbon Dioxide', 'Methane', 'Chlorofluorocarbons (CFCs)', 'Nitrous Oxide'] },
+        { question: 'What is the term for the gradual increase in the Earth\'s average temperature?', options: ['Global Cooling', 'Greenhouse Effect', 'Ozone Depletion', 'Global Warming'] },
+        { question: 'Which ocean is the largest and deepest?', options: ['Atlantic Ocean', 'Indian Ocean', 'Southern Ocean', 'Pacific Ocean'] },
+        { question: 'What is the purpose of a wildlife corridor?', options: ['To protect against wildfires', 'To provide a route for wildlife migration', 'To prevent soil erosion', 'To store carbon dioxide'] },
+        { question: 'What is the main component of smog in urban areas?', options: ['Oxygen', 'Nitrogen', 'Sulfur Dioxide', 'Carbon Monoxide'] },
+        { question: 'Which of the following is a non-renewable resource?', options: ['Wind', 'Coal', 'Solar', 'Geothermal'] },
+        { question: 'What is the term for the practice of planting trees to restore or create a forest?', options: ['Afforestation', 'Reforestation', 'Deforestation', 'Desertification'] },
+        { question: 'What is the main cause of ocean acidification?', options: ['Deforestation', 'Industrial pollution', 'Greenhouse gas emissions', 'Oil spills'] },
+        { question: 'Which environmental treaty aims to protect the ozone layer?', options: ['Kyoto Protocol', 'Paris Agreement', 'Montreal Protocol', 'Basel Convention'] },
+        { question: 'What is the term for the process by which plants make their own food using sunlight?', options: ['Respiration', 'Photosynthesis', 'Transpiration', 'Germination'] },
+        { question: 'Which of the following is a renewable source of freshwater?', options: ['Groundwater', 'Saltwater', 'Ice caps and glaciers', 'Seawater'] },
+        { question: 'What is the main cause of coral reef bleaching?', options: ['Ocean acidification', 'Overfishing', 'Pollution', 'Rising sea temperatures'] },
+        { question: 'What is the term for the process of converting waste materials into reusable materials?', options: ['Recycling', 'Incineration', 'Landfilling', 'Composting'] },
+        { question: 'Which endangered species is known for its distinctive black and white fur?', options: ['Bengal Tiger', 'Giant Panda', 'African Elephant', 'Leatherback Turtle'] },
+      ];
+	  
+	  const animalQuestions = [
+        { question: 'What is the largest mammal on Earth?', options: ['Elephant', 'Blue Whale', 'Giraffe'] },
+        { question: 'Which bird is known for its ability to mimic human speech?', options: ['Penguin', 'Parrot', 'Eagle'] },
+        { question: 'What is the largest species of lizard?', options: ['Iguana', 'Komodo Dragon', 'Chameleon'] },
+        { question: 'Which amphibian is known for its ability to change color?', options: ['Salamander', 'Frog', 'Toad'] },
+        { question: 'Which fish is famous for its electric shocks?', options: ['Clownfish', 'Electric Eel', 'Salmon'] },
+        { question: 'What is the largest species of butterfly?', options: ['Monarch Butterfly', 'Swallowtail Butterfly', 'Atlas Moth'] },
+        { question: 'Which mammal carries its young in a pouch?', options: ['Kangaroo', 'Koala', 'Tasmanian Devil'] },
+        { question: 'What is the primary food source for polar bears?', options: ['Fish', 'Seals', 'Penguins'] },
+        { question: 'Which big cat is critically endangered?', options: ['Tiger', 'Lion', 'Snow Leopard'] },
+        { question: 'What is the largest species of shark?', options: ['Great White Shark', 'Hammerhead Shark', 'Whale Shark'] },
+        { question: 'What is the most popular pet fish?', options: ['Goldfish', 'Betta Fish', 'Guppy'] },
+        { question: 'Which large herbivorous mammal has a trunk?', options: ['Rhino', 'Elephant', 'Hippopotamus'] },
+        { question: 'What is the largest known dinosaur?', options: ['Tyrannosaurus Rex', 'Triceratops', 'Brachiosaurus'] },
+        { question: 'Which animal is known for its ability to rotate its head up to 270 degrees?', options: ['Owl', 'Bat', 'Lemur'] },
+        { question: 'What is the largest primate in the world?', options: ['Chimpanzee', 'Gorilla', 'Orangutan'] },
+        { question: 'Which marsupial is native to Australia and known for carrying its young in a pouch?', options: ['Wallaby', 'Quokka', 'Koala'] },
+        { question: 'Which bird is known for its long annual migration from the Arctic to the Antarctic?', options: ['Puffin', 'Albatross', 'Arctic Tern'] },
+        { question: 'Which large herbivore is native to the African savannah and known for its distinctive horns?', options: ['Buffalo', 'Gazelle', 'Wildebeest'] },
+        { question: 'What is the primary function of a camel\'s hump?', options: ['Water storage', 'Fat storage', 'Temperature regulation'] },
+        { question: 'Which sea creature is known for its bioluminescence, producing light in the dark ocean depths?', options: ['Jellyfish', 'Squid', 'Anglerfish'] },
+      ];
+	  
+      const geographyQuestions = [
+        { question: 'What is the capital of France?', options: ['Berlin', 'Paris', 'Rome'] },
+        { question: 'Which river is the longest in the world?', options: ['Amazon', 'Nile', 'Mississippi'] },
+        { question: 'In which continent is the Sahara Desert located?', options: ['Asia', 'Africa', 'South America'] },
+        { question: 'What is the largest ocean on Earth?', options: ['Indian Ocean', 'Atlantic Ocean', 'Pacific Ocean'] },
+        { question: 'Which mountain range spans across seven countries, including India and Nepal?', options: ['Rocky Mountains', 'Alps', 'Himalayas'] },
+        { question: 'What is the capital of Canada?', options: ['Ottawa', 'Toronto', 'Vancouver'] },
+        { question: 'Which country is known as the Land of the Rising Sun?', options: ['China', 'Japan', 'South Korea'] },
+        { question: 'The Great Barrier Reef is located off the coast of which country?', options: ['Brazil', 'Australia', 'Mexico'] },
+        { question: 'What is the capital of South Africa?', options: ['Nairobi', 'Cairo', 'Pretoria'] },
+        { question: 'Which of the following is the largest island in the world?', options: ['Greenland', 'Borneo', 'Iceland'] },
+        { question: 'What is the currency of Japan?', options: ['Yen', 'Won', 'Ringgit'] },
+        { question: 'The Panama Canal connects which two oceans?', options: ['Atlantic and Indian Ocean', 'Pacific and Arctic Ocean', 'Atlantic and Pacific Ocean'] },
+        { question: 'Which desert is often called the "Outback" and is located in Australia?', options: ['Mojave Desert', 'Gobi Desert', 'Great Victoria Desert'] },
+        { question: 'What is the official language of Brazil?', options: ['Spanish', 'Portuguese', 'French'] },
+        { question: 'In which country would you find the famous city of Istanbul?', options: ['Greece', 'Turkey', 'Egypt'] },
+        { question: 'The Amazon Rainforest is primarily located in which country?', options: ['Brazil', 'Colombia', 'Peru'] },
+        { question: 'Which river is associated with the ancient civilization of Mesopotamia?', options: ['Tigris', 'Nile', 'Euphrates'] },
+        { question: 'The city of Marrakech is located in which African country?', options: ['Egypt', 'Morocco', 'Nigeria'] },
+        { question: 'What is the highest mountain in North America?', options: ['Denali (Mount McKinley)', 'Mount Elbert', 'Mount Logan'] },
+        { question: 'Which European country is known as the "Land of a Thousand Lakes"?', options: ['Finland', 'Sweden', 'Norway'] },
+      ];
+	  
+	  const scienceQuestions = [
+        { question: 'What is the chemical symbol for gold?', options: ['Go', 'Au', 'Ag'] },
+        { question: 'Which planet is known as the "Red Planet"?', options: ['Venus', 'Mars', 'Jupiter'] },
+        { question: 'What is the powerhouse of the cell?', options: ['Nucleus', 'Mitochondria', 'Endoplasmic reticulum'] },
+        { question: 'Who developed the theory of relativity?', options: ['Isaac Newton', 'Albert Einstein', 'Galileo Galilei'] },
+        { question: 'What is the largest organ in the human body?', options: ['Liver', 'Skin', 'Heart'] },
+        { question: 'Which gas do plants absorb from the atmosphere during photosynthesis?', options: ['Oxygen', 'Carbon dioxide', 'Nitrogen'] },
+        { question: 'What is the chemical symbol for water?', options: ['Wo', 'Wa', 'H2O'] },
+        { question: 'What is the speed of light in a vacuum?', options: ['300,000 km/s', '150,000 km/s', '500,000 km/s'] },
+        { question: 'Who discovered penicillin?', options: ['Alexander Fleming', 'Louis Pasteur', 'Marie Curie'] },
+        { question: 'What is the smallest prime number?', options: ['0', '1', '2'] },
+        { question: 'What is the chemical formula for table salt?', options: ['NaCl', 'HCl', 'KCl'] },
+        { question: 'Which gas do plants release during photosynthesis?', options: ['Oxygen', 'Carbon dioxide', 'Nitrous oxide'] },
+        { question: 'What is the main function of the ozone layer?', options: ['Trap heat', 'Block ultraviolet radiation', 'Generate electricity'] },
+        { question: 'Who is known as the father of modern physics?', options: ['Isaac Newton', 'Galileo Galilei', 'Albert Einstein'] },
+        { question: 'What is the chemical symbol for iron?', options: ['Ir', 'Fe', 'In'] },
+        { question: 'What is the largest ocean on Earth?', options: ['Indian Ocean', 'Atlantic Ocean', 'Pacific Ocean'] },
+        { question: 'Which gas makes up the majority of Earth\'s atmosphere?', options: ['Oxygen', 'Nitrogen', 'Carbon dioxide'] },
+        { question: 'What is the process by which plants make their own food?', options: ['Respiration', 'Photosynthesis', 'Transpiration'] },
+        { question: 'Who proposed the heliocentric model of the solar system?', options: ['Ptolemy', 'Copernicus', 'Kepler'] },
+        { question: 'What is the unit of electric current?', options: ['Watt', 'Volt', 'Ampere'] },
+      ];
+	  
+	  const mathQuestions = [
+        { question: 'What is the value of π (pi)?', options: ['2.718', '3.142', '1.618'] },
+        { question: 'In a right-angled triangle, which side is opposite the right angle?', options: ['Hypotenuse', 'Adjacent', 'Opposite'] },
+        { question: 'What is the result of multiplying any number by zero?', options: ['1', '0', 'Infinity'] },
+        { question: 'Which of the following is a prime number?', options: ['1', '8', '17'] },
+        { question: 'What is the sum of the angles in a triangle?', options: ['90 degrees', '180 degrees', '360 degrees'] },
+        { question: 'What is the square root of 64?', options: ['6', '8', '10'] },
+        { question: 'In geometry, what do we call a polygon with eight sides?', options: ['Hexagon', 'Octagon', 'Decagon'] },
+        { question: 'If a rectangle has a length of 5 units and a width of 8 units, what is its area?', options: ['13 sq units', '40 sq units', '64 sq units'] },
+        { question: 'What is the value of 2 to the power of 3?', options: ['6', '8', '16'] },
+        { question: 'What is the circumference formula of a circle?', options: ['πr²', '2πr', 'πd'] },
+        { question: 'What is the formula for the area of a triangle?', options: ['0.5bh', 'l²', 'πr²'] },
+        { question: 'Which trigonometric function is equal to the ratio of the opposite side to the hypotenuse in a right-angled triangle?', options: ['Sine', 'Cosine', 'Tangent'] },
+        { question: 'How many degrees are in a full circle?', options: ['180', '270', '360'] },
+        { question: 'What is the value of the mathematical constant \'e\' approximately equal to?', options: ['2.718', '3.142', '1.618'] },
+        { question: 'What is the sum of the interior angles of a hexagon?', options: ['90 degrees', '120 degrees', '720 degrees'] },
+        { question: 'Which of the following is not a type of triangle?', options: ['Equilateral', 'Isosceles', 'Quadrilateral'] },
+        { question: 'What is the value of 10 factorial (10!)?', options: ['45', '362,880', '100'] },
+        { question: 'What is the Pythagorean theorem?', options: ['a² + b² = c²', 'πr²', '2πr'] },
+        { question: 'If x + 5 = 10, what is the value of x?', options: ['5', '10', '15'] },
+        { question: 'What is the decimal equivalent of the fraction 3/4?', options: ['0.25', '0.5', '0.75'] },
+      ];
+
+	  const philippineHistoryQuestions = [
+	    { question: 'Who is considered the national hero of the Philippines?', options: ['Jose Rizal', 'Andres Bonifacio', 'Emilio Aguinaldo'] },
+        { question: 'When did the Philippines gain independence from Spanish rule?', options: ['1896', '1898', '1901'] },
+        { question: 'Which battle marked the end of Spanish colonization in the Philippines?', options: ['Battle of Mactan', 'Battle of Manila Bay', 'Battle of Bataan'] },
+        { question: 'Who declared the independence of the Philippines on June 12, 1898?', options: ['Andres Bonifacio', 'Emilio Aguinaldo', 'Apolinario Mabini'] },
+        { question: 'What event led to the Philippines becoming a colony of the United States in 1899?', options: ['Treaty of Paris', 'Treaty of Tordesillas', 'Treaty of Versailles'] },
+        { question: 'During World War II, which country occupied the Philippines?', options: ['Japan', 'Germany', 'Italy'] },
+        { question: 'Where did General Douglas MacArthur fulfill his famous promise "I shall return" during World War II?', options: ['Corregidor', 'Leyte', 'Bataan'] },
+        { question: 'What is the name of the underground resistance movement during the Japanese occupation?', options: ['Katipunan', 'Hukbalahap', 'KALIBAPI'] },
+        { question: 'Which president declared martial law in the Philippines in 1972?', options: ['Ferdinand Marcos', 'Corazon Aquino', 'Gloria Macapagal-Arroyo'] },
+        { question: 'What event marked the end of the martial law era in the Philippines?', options: ['People Power Revolution', 'EDSA Revolution', 'Cry of Pugad Lawin'] },
+        { question: 'Who became the first female president of the Philippines?', options: ['Gloria Macapagal-Arroyo', 'Imelda Marcos', 'Corazon Aquino'] },
+        { question: 'In what year did the eruption of Mount Pinatubo significantly impact the Philippines?', options: ['1989', '1991', '1993'] },
+        { question: 'Which city served as the temporary capital of the Philippines during World War II?', options: ['Baguio', 'Cebu', 'Davao'] },
+        { question: 'What is the official language of the Philippines?', options: ['English', 'Tagalog', 'Filipino'] },
+        { question: 'Which Philippine president is known for the "Economic Miracle" during the 1960s?', options: ['Diosdado Macapagal', 'Ferdinand Marcos', 'Ramon Magsaysay'] },
+        { question: 'What is the name of the historic document proclaiming Philippine independence in 1898?', options: ['Declaration of Independence', 'Malolos Constitution', 'Pact of Biak-na-Bato'] },
+        { question: 'Which group fought for Philippine independence against both Spanish and American rule?', options: ['Katipunan', 'Huks', 'Sakdalistas'] },
+        { question: 'Who was the first Filipino to circumnavigate the world?', options: ['Ferdinand Magellan', 'Lapu-Lapu', 'Enrique of Malacca'] },
+        { question: 'What is the longest river in the Philippines?', options: ['Cagayan Rive*', 'Agusan River', 'Pampanga River'] },
+        { question: 'Which Philippine mountain is the highest peak in the country?', options: ['Mount Mayon', 'Mount Apo', 'Mount Pulag'] },
+          ];
+		  
+	  const techInnovationQuestions = [
+        { question: 'Who is considered the father of modern computer science?', options: ['Alan Turing', 'Bill Gates', 'Steve Jobs'] },
+        { question: 'What does the acronym "AI" stand for in the context of technology?', options: ['Advanced Interface', 'Artificial Intelligence', 'Automated Invention'] },
+        { question: 'Which company developed the first commercially successful personal computer?', options: ['IBM', 'Apple', 'Microsoft'] },
+        { question: 'What is the primary purpose of a 3D printer?', options: ['Printing documents in 3D format', 'Creating three-dimensional objects layer by layer', 'Enhancing virtual reality experiences'] },
+        { question: 'Which programming language is commonly used for web development?', options: ['Java', 'Python', 'HTML/CSS'] },
+        { question: 'What is the main function of a firewall in computer security?', options: ['Virus removal', 'Unauthorized access prevention', 'Data encryption'] },
+        { question: 'Which tech company is associated with the slogan "Think Different"?', options: ['Microsoft', 'IBM', 'Apple'] },
+        { question: 'What is the purpose of a QR code in technology?', options: ['Sending text messages', 'Storing and quickly retrieving information', 'Enhancing sound quality in audio files'] },
+        { question: 'Which of the following is a widely used open-source operating system?', options: ['Windows', 'macOS', 'Linux'] },
+        { question: 'What does the term "IoT" stand for in the tech industry?', options: ['Internet of Things', 'Input of Technology', 'Integrated Online Tools'] },
+        { question: 'Who co-founded Microsoft alongside Bill Gates?', options: ['Mark Zuckerberg', 'Steve Wozniak', 'Paul Allen'] },
+        { question: 'Which technology is used for wireless communication between devices over short distances?', options: ['Bluetooth', 'GPS', 'Wi-Fi'] },
+        { question: 'What is the main purpose of a VPN (Virtual Private Network)?', options: ['Enhancing internet speed', 'Securing and anonymizing online connections', 'Creating virtual reality environments'] },
+        { question: 'What is the largest social media platform by active users?', options: ['Instagram', 'Facebook', 'Twitter'] },
+        { question: 'Which tech giant is known for its search engine?', options: ['Apple', 'Google', 'Amazon'] },
+        { question: 'What is the primary function of a drone in technology?', options: ['Automated vacuum cleaning', 'Aerial photography and surveillance', 'Voice-controlled personal assistant'] },
+        { question: 'Which programming language is commonly used for data analysis and machine learning?', options: ['Java', 'Python', 'C++'] },
+        { question: 'What is the purpose of a CDN (Content Delivery Network) in internet infrastructure?', options: ['Ensuring internet privacy', 'Accelerating content delivery and improving website performance', 'Blocking malicious websites'] },
+        { question: 'Which gaming console is developed by Sony?', options: ['Xbox', 'Nintendo Switch', 'PlayStation'] },
+        { question: 'What is the concept of "cloud computing" in technology?', options: ['Storing data on physical servers', 'Accessing and using computing resources over the internet', 'Creating virtual reality simulations'] },
+          ];
+		  
+	  const computerHardwareQuestions = [
+        { question: 'What is the primary function of a CPU (Central Processing Unit)?', options: ['Graphics rendering', 'Data storage', 'Processing instructions'] },
+        { question: 'Which component stores data permanently even when the power is turned off?', options: ['RAM (Random Access Memory)', 'HDD (Hard Disk Drive)', 'CPU (Central Processing Unit)'] },
+        { question: 'What does RAM stand for in computer hardware?', options: ['Random Access Memory', 'Read-Only Memory', 'Redundant Array of Memory'] },
+        { question: 'Which type of connection is commonly used to connect peripherals such as printers and keyboards to a computer?', options: ['USB (Universal Serial Bus)', 'HDMI (High-Definition Multimedia Interface)', 'VGA (Video Graphics Array)'] },
+        { question: 'What is the purpose of a GPU (Graphics Processing Unit) in a computer system?', options: ['Data storage', 'Graphics rendering', 'Centralized processing'] },
+        { question: 'Which component is responsible for managing communication between different hardware devices in a computer?', options: ['Motherboard', 'Power Supply Unit (PSU)', 'Network Interface Card (NIC)'] },
+        { question: 'What does BIOS stand for in computer hardware?', options: ['Basic Input/Output System', 'Binary Input/Output Standard', 'Base Input/Output Software'] },
+        { question: 'Which storage technology is known for its fast data access but is volatile and loses data when power is interrupted?', options: ['SSD (Solid State Drive)', 'HDD (Hard Disk Drive)', 'RAM (Random Access Memory)'] },
+        { question: 'What is the purpose of a PSU (Power Supply Unit) in a computer?', options: ['Process data', 'Provide power to components', 'Manage network connections'] },
+        { question: 'Which of the following is not a type of computer port?', options: ['USB', 'TCP', 'HDMI'] },
+        { question: 'What does RAID stand for in the context of data storage?', options: ['Random Array of Independent Disks', 'Redundant Array of Inexpensive Disks', 'Rapid Access of Integrated Data'] },
+        { question: 'Which component is responsible for converting digital signals from a computer into analog signals for transmission over telephone lines?', options: ['Modem', 'Router', 'Switch'] },
+        { question: 'What is the purpose of a heat sink in a computer?', options: ['Store data', 'Dissipate heat from the CPU', 'Amplify audio signals'] },
+        { question: 'Which type of memory is non-volatile and retains data even when the power is turned off?', options: ['RAM', 'ROM (Read-Only Memory)', 'Cache Memory'] },
+        { question: 'What is the role of a network interface card (NIC) in a computer?', options: ['Process graphics', 'Connect to a network', 'Manage power supply'] },
+        { question: 'Which technology allows wireless communication between devices within a short range?', options: ['Bluetooth', 'NFC (Near Field Communication)', 'Wi-Fi'] },
+        { question: 'What is the purpose of an optical drive in a computer?', options: ['Display images', 'Read and write optical discs', 'Connect to the internet'] },
+        { question: 'Which component is responsible for managing the flow of data between the CPU and other peripherals?', options: ['Northbridge', 'Southbridge', 'Hard Drive Controller'] },
+        { question: 'What does HDMI stand for in the context of computer hardware?', options: ['High-Definition Multimedia Interface', 'Hyperlink Data Management Interface', 'Hardware Direct Memory Interface'] },
+        { question: 'Which of the following is a common input device for a computer?', options: ['Monitor', 'Keyboard', 'Speaker'] },
+          ];
+		  
+	  const programmingLanguageQuestions = [
+        { question: 'What is a programming language?', options: ['Set of cooking instructions', 'Formalized set of instructions that a computer can interpret', 'Ancient form of communication'] },
+        { question: 'Which programming language is known for its simplicity and readability?', options: ['C++', 'Python', 'Java'] },
+        { question: 'What does HTML stand for?', options: ['HyperText Markup Language', 'High-level Text Language', 'HyperTransfer Markup Language'] },
+        { question: 'Which programming paradigm emphasizes immutability and functional purity?', options: ['Object-oriented', 'Functional', 'Procedural'] },
+        { question: 'What is the purpose of a compiler in programming?', options: ['To debug code', 'To translate source code into machine code', 'To design user interfaces'] },
+        { question: 'Which of the following is a dynamically typed language?', options: ['Java', 'C#', 'JavaScript'] },
+        { question: 'What is the main advantage of version control systems like Git?', options: ['Storing only the latest version of code', 'Collaborative development and version tracking', 'Running code on multiple machines simultaneously'] },
+        { question: 'Which company developed the C programming language?', options: ['Microsoft', 'IBM', 'Bell Labs'] },
+        { question: 'What is the purpose of SQL in programming?', options: ['Styling web pages', 'Managing databases', 'Creating graphical user interfaces'] },
+        { question: 'Which programming language is commonly used for developing mobile applications?', options: ['Swift', 'Ruby', 'PHP'] },
+        { question: 'What is the significance of the keyword "this" in JavaScript?', options: ['Refers to the previous function', 'Refers to the current object', 'Indicates the end of a statement'] },
+        { question: 'Which data structure follows the Last In, First Out (LIFO) principle?', options: ['Queue', 'Stack', 'Linked List'] },
+        { question: 'What is the purpose of the "else" statement in conditional structures?', options: ['To repeat a block of code', 'To execute code only if a certain condition is false', 'To define a loop'] },
+        { question: 'In object-oriented programming, what is encapsulation?', options: ['Hiding the implementation details and exposing only necessary functionalities', 'Combining multiple data types into one variable', 'Creating multiple instances of a class'] },
+        { question: 'Which programming language is commonly used for data analysis and statistics?', options: ['Java', 'R*', 'C#'] },
+        { question: 'What is the purpose of a constructor in object-oriented programming?', options: ['To destroy objects', 'To initialize an object\'s properties', 'To create global variables'] },
+        { question: 'What does API stand for in the context of programming?', options: ['Advanced Programming Interface', 'Application Programming Interface', 'Automated Programming Interface'] },
+        { question: 'Which type of error occurs during compilation and prevents the program from running?', options: ['Syntax error', 'Runtime error', 'Logic error'] },
+        { question: 'What is the purpose of the "break" statement in loops?', options: ['To exit the loop prematurely', 'To continue to the next iteration', 'To pause the loop temporarily'] },
+        { question: 'Which programming language is commonly used for building web applications on the client side?', options: ['Ruby', 'Python', 'JavaScript'] },
+          ];
+      switch (category) {
+        case 'General Knowledge':
+          questionsHTML += generateCategoryQuestionsHTML(generalKnowledgeQuestions, numQuestions);
+          break;
+        case 'Environment':
+          questionsHTML += generateCategoryQuestionsHTML(environmentQuestions, numQuestions);
+          break;
+		case 'Animal':
+          questionsHTML += generateCategoryQuestionsHTML(animalQuestions, numQuestions);
+          break;
+		case 'Geography':
+          questionsHTML += generateCategoryQuestionsHTML(geographyQuestions, numQuestions);
+          break;
+		case 'Science':
+          questionsHTML += generateCategoryQuestionsHTML(scienceQuestions, numQuestions);
+          break;
+		case 'Mathematics':
+          questionsHTML += generateCategoryQuestionsHTML(mathQuestions, numQuestions);
+          break;
+		case 'Philippine History':
+          questionsHTML += generateCategoryQuestionsHTML(philippineHistoryQuestions, numQuestions);
+          break;
+		case 'Technology and Innovation':
+          questionsHTML += generateCategoryQuestionsHTML(techInnovationQuestions, numQuestions);
+          break;
+		case 'Computer Hardware':
+          questionsHTML += generateCategoryQuestionsHTML(computerHardwareQuestions, numQuestions);
+          break;
+		case 'Programming Language':
+          questionsHTML += generateCategoryQuestionsHTML(programmingLanguageQuestions, numQuestions);
+          break;
+		  
+        default:
+          break;
+      }
+      return questionsHTML;
+    }
+
+    function generateCategoryQuestionsHTML(questions, numQuestions) {
+      let questionsHTML = '';
+      for (let i = 0; i < numQuestions; i++) {
+        questionsHTML += `<div class="question">
+                            <p>${questions[i].question}</p>
+                            ${questions[i].options.map((option, index) => `<label><input type="radio" name="q${i + 1}" value="${String.fromCharCode(65 + index)}">${option}</label>`).join('')}
+                          </div>`;
+      }
+      return questionsHTML;
+    }
+
+    const correctAnswers = {
+      'General Knowledge': ['C', 'B', 'B', 'A', 'C', 'B', 'A', 'A', 'B', 'B', 'B', 'B', 'B', 'A', 'B', 'C', 'A', 'C', 'A', 'A'],
+      'Environment': ['B', 'C', 'A', 'A', 'A', 'C', 'C', 'D', 'D', 'B', 'C', 'B', 'B', 'C', 'C', 'B', 'A', 'D', 'A', 'B'],
+      'Animal': ['B', 'B', 'B', 'A', 'B', 'C', 'A', 'B', 'C', 'C', 'A', 'B', 'C', 'A', 'B', 'C', 'C', 'C', 'B', 'C'],
+      'Geography': ['B', 'B', 'B', 'C', 'C', 'A', 'B', 'B', 'C', 'A', 'A', 'C', 'C', 'B', 'B', 'A', 'C', 'B', 'A', 'A'],
+      'Science': ['B', 'B', 'B', 'B', 'B', 'B', 'C', 'A', 'A', 'C', 'A', 'A', 'B', 'C', 'B', 'C', 'B', 'B', 'B', 'C'],
+      'Mathematics': ['B', 'A', 'B', 'C', 'B', 'B', 'B', 'C', 'B', 'B', 'A', 'A', 'C', 'A', 'C', 'C', 'B', 'A', 'A', 'C'],
+      'Philippine History': ['A', 'B', 'B', 'B', 'A', 'A', 'B', 'B', 'A', 'B', 'C', 'B', 'A', 'C', 'A', 'B', 'A', 'C', 'A', 'B'],
+      'Technology and Innovation': ['A', 'B', 'B', 'B', 'C', 'B', 'C', 'B', 'C', 'A', 'C', 'A', 'B', 'B', 'B', 'B', 'B', 'B', 'C', 'B'],
+      'Computer Hardware': ['C', 'B', 'A', 'A', 'B', 'A', 'A', 'C', 'B', 'B', 'B', 'A', 'B', 'B', 'B', 'A', 'B', 'A', 'A', 'B'],
+      'Programming Language': ['B', 'B', 'A', 'B', 'B', 'C', 'B', 'C', 'B', 'A', 'B', 'B', 'B', 'A', 'B', 'B', 'B', 'A', 'A', 'C'],
+    };
+  
+    function calculateScore() {
+      // Get all the user's selected answers
+      const userAnswers = [];
+      for (let i = 1; i <= numQuestions; i++) {
+        const selectedOption = document.querySelector(`input[name="q${i}"]:checked`);
+        userAnswers.push(selectedOption ? selectedOption.value : '');
+      }
+  
+      // Get correct answers for the current category
+      const categoryCorrectAnswers = correctAnswers[category];
+  
+      // Compare user's answers with correct answers
+      let correctCount = 0;
+      for (let i = 0; i < numQuestions; i++) {
+        if (userAnswers[i] === categoryCorrectAnswers[i]) {
+          correctCount++;
+        }
+      }
+  
+      // Calculate the percentage score
+      const userScore = (correctCount / numQuestions) * 100;
+  
+      // Display the user's score
+      const scoreDisplay = document.getElementById('userScore');
+      scoreDisplay.textContent = `Your Score: ${userScore.toFixed(2)}%`;
+  
+      // Prompt to check the answer key
+      const wantToCheckAnswerKey = window.confirm('Do you want to check the answer key?');
+      if (wantToCheckAnswerKey) {
+        // Redirect to the answer key page
+        window.location.href = 'answerkey.html';
+      }
+    }  
+
+  window.onload = displayCategoryButtons;
+
+  </script>
+
+</body>
+
+</html>
